@@ -9,7 +9,72 @@
 - Send metrics to Wavefront via Wavefront proxy (running on Kubernetes cluster)
 - Send messages to Slack channel(s)
 
-## Installation
+## Installation for your own project
+
+### Local development
+
+As you should already have access to the Github Algolia organization, you
+should be able to access https://github.com/algolia/owl. If so, it means you
+can simply clone it in your Go source tree by using:
+
+```
+git clone git@github.com:algolia/owl.git $GOPATH/src/github.com/algolia/owl
+```
+
+### Travis
+
+As `owl` is a private Gitub repository, TravisCI will not be able to download
+this project directly as a dependency of your own project. The following
+section will guide you through the generation and upload of a dedicated SSH key
+into both your Travis build and `owl` repo.
+
+
+First, you need to generate a public/private key pair that will be used to let
+your project access the `github.com/algolia/owl`:
+
+```
+ssh-keygen -t rsa -b 4096 -f travis_key_to_owl -P ''
+```
+
+Then add your freshly generated public key (the `travis_key_to_owl.pub`
+file) to the list of authorized deploy keys of the `owl` repository
+[here](https://github.com/algolia/owl/settings/keys). Click on `Add deploy
+key`, fill the `Title` field with the name of your project and paste the
+content of the public key in the `Key` field. Make sure the `Allow write access
+checkbox` is left unchecked.
+
+Now go in your own project repository directory, and add your private key to
+the Travis configuration file using:
+
+```
+cd /path/to/your/own/project
+travis encrypt-file /path/to/travis_key_to_owl --add
+```
+
+Once it's done, your project's `.travis.yaml` file will include a new line in
+the `before_install` section which is there to decrypt your private SSH key. To
+let Git make use of it from your future builds, you need to make the SSH agent
+load it. To do it, just add those three lines after the `openssl` command of
+the `before_install` section of your `.travis.yaml` file:
+
+```
+before_install:
+- openssl ...
+- chmod 600 travis_access_to_owl
+- eval "$(ssh-agent)"
+- ssh-add travis_access_to_owl
+```
+
+Finally, simply commit and push your changes in Git:
+
+```
+git add travis_key_to_owl.enc .travis.yaml
+git ci -m 'chore: Let Travis' ssh-agent to access github.com/algolia/owl'
+```
+
+You can now safely delete your `travis_access_to_owl` (private key) and
+`travis_key_to_owl.pub` (public key) files as they are correctly stored and
+should not be shared by anything else than Github and Travis.
 
 ## How to use?
 
