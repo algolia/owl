@@ -1,0 +1,12 @@
+language: go
+go:
+  - 1.8
+before_install:
+  - mkdir -p /home/travis/gopath/{src,bin,pkg}
+  - curl https://glide.sh/get | sh
+install:
+  - make deps
+before_script:
+  - make check-formatting
+script:
+  - make test

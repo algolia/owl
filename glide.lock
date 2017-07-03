@@ -1,0 +1,35 @@
+hash: 501423af4494b69aa2eed2b4b06bbaa06a2aa34fd019652fa42c9f21fdf8c180
+updated: 2017-07-03T10:25:50.583877055+02:00
+imports:
+- name: github.com/aseure/go-metrics-wavefront
+  version: 1eb2da507f23fd3b1f9385041da1f46708ddb156
+- name: github.com/cactus/go-statsd-client
+  version: 27b18692a5ac55b0aa1805a5d7e03d2623b62324
+  subpackages:
+  - statsd
+- name: github.com/certifi/gocertifi
+  version: a61bf5eafa3aee233ec8043e9da052447e5463dd
+- name: github.com/getsentry/raven-go
+  version: 3f7439d3e74d88e21d196ba20eb61a5a958bc118
+- name: github.com/mgutz/ansi
+  version: c286dcecd19ff979eeb73ea444e479b903f2cfcb
+- name: github.com/rcrowley/go-metrics
+  version: 1f30fe9094a513ce4c700b9a54458bbb0c96996c
+- name: github.com/stathat/go
+  version: 74669b9f388d9d788c97399a0824adbfee78400e
+- name: github.com/stretchr/testify
+  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
+  subpackages:
+  - assert
+  - require
+- name: github.com/wavefronthq/go-metrics-wavefront
+  version: 7dd88e4dfc544ce201375d100d360bc2f6582a2c
+testImports:
+- name: github.com/davecgh/go-spew
+  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  subpackages:
+  - spew
+- name: github.com/pmezard/go-difflib
+  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
+  subpackages:
+  - difflib
