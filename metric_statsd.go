@@ -7,16 +7,17 @@ var (
 	statsdStatPrefix string
 )
 
-func initMetricStatsd() {
+func initMetricStatsd() error {
 	var err error
 
 	if statsdClient, err = statsd.NewClient(config.Metric.StatsdUrl, config.AppName); err != nil {
-		Error("owl: cannot instantiate client to StatsD proxy (%s): %s", config.Metric.StatsdUrl, err)
 		useMetric = false
-		return
+		return Error("owl: cannot instantiate client to StatsD proxy (%s): %s", config.Metric.StatsdUrl, err)
 	}
 
 	statsdStatPrefix = config.AppName + "."
+
+	return nil
 }
 
 func metricIncStatsd(stat string, value int64) {

@@ -4,18 +4,17 @@ import (
 	"net"
 	"time"
 
-	"github.com/aseure/go-metrics-wavefront"
 	"github.com/rcrowley/go-metrics"
+	"github.com/wavefronthq/go-metrics-wavefront"
 )
 
 var wavefrontConfig *wavefront.WavefrontConfig
 
-func initMetricWavefront() {
+func initMetricWavefront() error {
 	addr, err := net.ResolveTCPAddr("tcp", config.Metric.WavefrontUrl)
 	if err != nil {
 		useMetric = false
-		Error("owl: cannot resolve Wavefront proxy address (%s): %s", config.Metric.WavefrontUrl, err)
-		return
+		return Error("owl: cannot resolve Wavefront proxy address (%s): %s", config.Metric.WavefrontUrl, err)
 	}
 
 	wavefrontConfig = &wavefront.WavefrontConfig{
@@ -26,6 +25,8 @@ func initMetricWavefront() {
 		HostTags:     map[string]string{"git_tag": GitTag},
 		Percentiles:  []float64{0.5, 0.75, 0.95, 0.99, 0.999},
 	}
+
+	return nil
 }
 
 func metricIncWavefront(stat string, value int64, tags map[string]string) {

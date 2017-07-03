@@ -1,20 +1,33 @@
 package owl
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
-func initMetric() {
+func initMetric() error {
 	if config.Metric == nil {
 		useMetric = false
-		return
+		return nil
+	}
+
+	if useMetric && config.Metric.StatsdUrl == "" && config.Metric.WavefrontUrl == "" {
+		return errors.New("owl: cannot use Metric logging with both `StatsdUrl` and `WavefrontUrl` fields empty")
 	}
 
 	if config.Metric.StatsdUrl != "" {
-		initMetricStatsd()
+		if err := initMetricStatsd(); err != nil {
+			return err
+		}
 	}
 
 	if config.Metric.WavefrontUrl != "" {
-		initMetricWavefront()
+		if err := initMetricWavefront(); err != nil {
+			return err
+		}
 	}
+
+	return nil
 }
 
 type MetricTimer struct {

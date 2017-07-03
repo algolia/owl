@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/getsentry/raven-go"
+	raven "github.com/getsentry/raven-go"
 	"github.com/mgutz/ansi"
 )
 
@@ -19,10 +19,10 @@ var (
 	logFile *os.File
 )
 
-func initLogger() {
+func initLogger() error {
 	if config.Logger == nil {
 		useSentry = false
-		return
+		return nil
 	}
 
 	ansi.DisableColors(!config.Logger.UseColors)
@@ -38,13 +38,20 @@ func initLogger() {
 		var err error
 		logFile, err = os.OpenFile(config.Logger.LogFilePath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0660)
 		if err != nil {
-			writeToLogger(errorLogger, fmt.Sprintf("owl: cannot open or create log file: %s", err))
+			logFile = nil
+			return Error("owl: cannot open or create log file: %s", err)
 		}
 	}
 
 	if useSentry {
+		if config.Logger.SentryDsn == "" {
+			useSentry = false
+			return Error("owl: Cannot use Sentry as the SentryDsn configuration field is empty")
+		}
 		raven.SetDSN(config.Logger.SentryDsn)
 	}
+
+	return nil
 }
 
 func stopLogger() {

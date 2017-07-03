@@ -1,6 +1,9 @@
 package owl
 
-import "os"
+import (
+	"errors"
+	"os"
+)
 
 var (
 	config    Configuration
@@ -9,9 +12,9 @@ var (
 	useSlack  bool
 )
 
-func Init(c Configuration) (err error) {
-	if err = checkConfiguration(c); err != nil {
-		return
+func Init(c Configuration) error {
+	if c.AppName == "" {
+		return errors.New("owl: `AppName` configuration field cannot be empty")
 	}
 	config = c
 
@@ -27,13 +30,24 @@ func Init(c Configuration) (err error) {
 		useSlack = true
 	}
 
-	initLogger()
-	initMetric()
-	initSlack()
+	if err := initLogger(); err != nil {
+		return err
+	}
+	if err := initMetric(); err != nil {
+		return err
+	}
+	if err := initSlack(); err != nil {
+		return err
+	}
 
-	return
+	return nil
 }
 
 func Stop() {
 	stopLogger()
+
+	config = Configuration{}
+	useMetric = false
+	useSentry = false
+	useSlack = false
 }

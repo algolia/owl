@@ -23,8 +23,3 @@ type MetricConfiguration struct {
 type SlackConfiguration struct {
 	Token string `json:"token"`
 }
-
-func checkConfiguration(c Configuration) error {
-	// TODO
-	return nil
-}
