@@ -45,6 +45,14 @@ key`, fill the `Title` field with the name of your project and paste the
 content of the public key in the `Key` field. Make sure the `Allow write access
 checkbox` is left unchecked.
 
+:warning: **Important notice** :warning:
+
+From here, we are provide the private key to Travis as an encrypted file. If
+you have more than one encrypted file on Travis, create an archive to put them
+all together as Travis is currently not able to add multiple encrypted files.
+See https://docs.travis-ci.com/user/encrypting-files/#Encrypting-multiple-files
+for more details.
+
 Now go in your own project repository directory, and add your private key to
 the Travis configuration file using:
 
