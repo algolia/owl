@@ -21,6 +21,10 @@ func initMetricStatsd() error {
 }
 
 func metricIncStatsd(stat string, value int64) {
+	if !useMetric || statsdClient == nil {
+		return
+	}
+
 	err := statsdClient.Inc(statsdStatPrefix+stat, value, 1.0)
 	if err != nil {
 		Warning("owl: cannot increment metric %s of %d in StatsD: %s", stat, value, err)
@@ -28,6 +32,10 @@ func metricIncStatsd(stat string, value int64) {
 }
 
 func metricGaugeStatsd(stat string, value int64) {
+	if !useMetric || statsdClient == nil {
+		return
+	}
+
 	err := statsdClient.Gauge(statsdStatPrefix+stat, value, 1.0)
 	if err != nil {
 		Warning("owl: cannot gauge metric %s with %s in StatsD: %s", stat, value, err)

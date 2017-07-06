@@ -30,6 +30,10 @@ func initMetricWavefront() error {
 }
 
 func metricIncWavefront(stat string, value int64, tags map[string]string) {
+	if !useMetric || wavefrontConfig == nil {
+		return
+	}
+
 	mergedTags := mergeTags(tags, wavefrontConfig.HostTags)
 
 	counter := wavefront.GetOrRegisterMetric(stat, metrics.NewCounter(), mergedTags).(metrics.Counter)
@@ -38,6 +42,10 @@ func metricIncWavefront(stat string, value int64, tags map[string]string) {
 }
 
 func metricGaugeWavefront(stat string, value int64, tags map[string]string) {
+	if !useMetric || wavefrontConfig == nil {
+		return
+	}
+
 	mergedTags := mergeTags(tags, wavefrontConfig.HostTags)
 
 	gauge := wavefront.GetOrRegisterMetric(stat, metrics.NewGauge(), mergedTags).(metrics.Gauge)
