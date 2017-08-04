@@ -1,4 +1,4 @@
-![owl logo](https://raw.githubusercontent.com/algolia/owl/master/owl.png?token=AC-ItxuzISrqgsEX_VHR3ghHWUaMnKJ5ks5ZY2-fwA%3D%3D)
+![owl logo](owl.png)
 
 [![Build Status](https://travis-ci.com/algolia/owl.svg?token=sitays9RuExdRr9qx31m&branch=master)](https://travis-ci.com/algolia/owl)
 
