@@ -7,6 +7,7 @@ before_install:
 install:
   - make deps
 before_script:
+  - go get golang.org/x/tools/cmd/goimports
   - make check-formatting
 script:
   - make test
