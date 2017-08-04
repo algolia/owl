@@ -2,8 +2,10 @@
 UNAME=$(shell uname)
 ifeq ($(UNAME),Darwin)
   SORT_BIN=gsort
+  HEAD_BIN=ghead
 else
   SORT_BIN=sort
+  HEAD_BIN=head
 endif
 
 # Build variables
@@ -15,7 +17,7 @@ GIT_TAG=$(shell if [ $(HASH_HEAD) = $(HASH_LAST_TAG) ]; then echo $(LAST_TAG); e
 BIN=owl-${GIT_TAG}
 LDFLAGS="-X github.com/algolia/owl/info.GitTag=${GIT_TAG}"
 
-NEED_FORMATTING=$(shell for f in $(shell find . -name '*.go' | grep -v vendor); do gofmt -l $$f; done)
+NEED_FORMATTING=$(shell for dir in $(shell glide nv -x | ${HEAD_BIN} -n -1); do goimports -l $$dir; done)
 
 all: install
 
