@@ -2,6 +2,8 @@ package owl
 
 import (
 	"net"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/rcrowley/go-metrics"
@@ -11,7 +13,13 @@ import (
 var wavefrontConfig *wavefront.WavefrontConfig
 
 func initMetricWavefront() error {
-	addr, err := net.ResolveTCPAddr("tcp", config.Metric.WavefrontUrl)
+	url := extractWavefrontUrl(config.Metric.WavefrontUrl)
+	if url == "" {
+		useMetric = false
+		return Error("owl: invalid Wavefront proxy address (%s): should be URL:PORT or $URL:$PORT", config.Metric.WavefrontUrl)
+	}
+
+	addr, err := net.ResolveTCPAddr("tcp", url)
 	if err != nil {
 		useMetric = false
 		return Error("owl: cannot resolve Wavefront proxy address (%s): %s", config.Metric.WavefrontUrl, err)
@@ -27,6 +35,34 @@ func initMetricWavefront() error {
 	}
 
 	return nil
+}
+
+func extractWavefrontUrl(wavefrontUrl string) string {
+	splits := strings.Split(wavefrontUrl, ":")
+	if len(splits) != 2 {
+		useMetric = false
+		return ""
+	}
+
+	address, port := splits[0], splits[1]
+
+	if address == "" || port == "" {
+		return ""
+	}
+
+	if strings.HasPrefix(address, "$") && strings.HasPrefix(port, "$") {
+		// Start with $ -> Load from the environment
+		address = os.Getenv(address[1:])
+		port = os.Getenv(port[1:])
+		if address != "" && port != "" {
+			return address + ":" + port
+		}
+	} else if !strings.HasPrefix(address, "$") && !strings.HasPrefix(port, "$") {
+		// Start without $ -> Use the URL directly
+		return wavefrontUrl
+	}
+
+	return ""
 }
 
 func metricIncWavefront(stat string, value int64, tags map[string]string) {
