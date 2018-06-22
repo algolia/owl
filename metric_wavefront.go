@@ -77,9 +77,9 @@ func metricIncWavefront(stat string, value int64, tags map[string]string) {
 		return
 	}
 
-	counter := wavefront.GetOrRegisterMetric(stat, metrics.NewCounter(), nil).(metrics.Counter)
+	counter := wavefront.GetOrRegisterMetric(stat, metrics.NewCounter(), tags).(metrics.Counter)
 	counter.Inc(value)
-	wavefront.WavefrontSingleMetric(wavefrontConfig, stat, counter, nil)
+	wavefront.WavefrontSingleMetric(wavefrontConfig, stat, counter, tags)
 }
 
 func metricGaugeWavefront(stat string, value int64, tags map[string]string) {
@@ -87,7 +87,7 @@ func metricGaugeWavefront(stat string, value int64, tags map[string]string) {
 		return
 	}
 
-	gauge := wavefront.GetOrRegisterMetric(stat, metrics.NewGauge(), nil).(metrics.Gauge)
+	gauge := wavefront.GetOrRegisterMetric(stat, metrics.NewGauge(), tags).(metrics.Gauge)
 	gauge.Update(value)
-	wavefront.WavefrontSingleMetric(wavefrontConfig, stat, gauge, nil)
+	wavefront.WavefrontSingleMetric(wavefrontConfig, stat, gauge, tags)
 }
